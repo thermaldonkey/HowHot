@@ -7,38 +7,55 @@
 
 import SwiftUI
 
+enum TemperatureScale: CaseIterable {
+    case celsius, fahrenheit, kelvin
+    
+    func stringValue() -> String {
+        switch self {
+            case .celsius:
+            return "Celsius"
+        case .fahrenheit:
+            return "Fahrenheit"
+        case .kelvin:
+            return "Kelvin"
+        }
+    }
+}
+
 struct ContentView: View {
-    @State private var fromScale: String = "Celsius"
-    @State private var toScale: String = "Fahrenheit"
+    @State private var fromScale: TemperatureScale = .celsius
+    @State private var toScale: TemperatureScale = .fahrenheit
     @State private var fromTemp: Double = 0.0
     
     @FocusState private var tempIsFocused: Bool
-    
-    private let scales: [String] = ["Celsius", "Fahrenheit", "Kelvin"]
-    
+        
     private var toTemp: Double {
-        if fromScale == "Celsius" {
-            if toScale == "Fahrenheit" {
+        switch fromScale {
+        case .celsius:
+            switch toScale {
+            case .celsius:
+                return fromTemp
+            case .fahrenheit:
                 return celToFah(fromTemp)
-            } else if toScale == "Kelvin" {
+            case .kelvin:
                 return celToKel(fromTemp)
-            } else {
-                return fromTemp
             }
-        } else if fromScale == "Fahrenheit" {
-            if toScale == "Celsius" {
+        case .fahrenheit:
+            switch toScale {
+            case .celsius:
                 return fahToCel(fromTemp)
-            } else if toScale == "Kelvin" {
-                return celToKel(fahToCel(fromTemp))
-            } else {
+            case .fahrenheit:
                 return fromTemp
+            case .kelvin:
+                return celToKel(fahToCel(fromTemp))
             }
-        } else {
-            if toScale == "Celsius" {
+        case .kelvin:
+            switch toScale {
+            case .celsius:
                 return kelToCel(fromTemp)
-            } else if toScale == "Fahrenheit" {
+            case .fahrenheit:
                 return celToFah(kelToCel(fromTemp))
-            } else {
+            case .kelvin:
                 return fromTemp
             }
         }
@@ -65,8 +82,8 @@ struct ContentView: View {
             Form {
                 Section("From") {
                     Picker("From", selection: $fromScale) {
-                        ForEach(scales, id: \.self) {
-                            Text($0)
+                        ForEach(TemperatureScale.allCases, id: \.self) {
+                            Text($0.stringValue())
                         }
                     }
                     .pickerStyle(.segmented)
@@ -78,8 +95,8 @@ struct ContentView: View {
                 
                 Section("To") {
                     Picker("To", selection: $toScale) {
-                        ForEach(scales, id: \.self) {
-                            Text($0)
+                        ForEach(TemperatureScale.allCases, id: \.self) {
+                            Text($0.stringValue())
                         }
                     }
                     .pickerStyle(.segmented)
