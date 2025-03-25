@@ -19,29 +19,45 @@ struct ContentView: View {
     private var toTemp: Double {
         if fromScale == "Celsius" {
             if toScale == "Fahrenheit" {
-                return (fromTemp * 9.0 / 5.0) + 32.0
+                return celToFah(fromTemp)
             } else if toScale == "Kelvin" {
-                return fromTemp + 273.15
+                return celToKel(fromTemp)
             } else {
                 return fromTemp
             }
         } else if fromScale == "Fahrenheit" {
             if toScale == "Celsius" {
-                return (fromTemp - 32.0) * 5.0 / 9.0
+                return fahToCel(fromTemp)
             } else if toScale == "Kelvin" {
-                return ((fromTemp - 32.0) * 5.0 / 9.0) + 273.15
+                return celToKel(fahToCel(fromTemp))
             } else {
                 return fromTemp
             }
         } else {
             if toScale == "Celsius" {
-                return fromTemp - 273.15
+                return kelToCel(fromTemp)
             } else if toScale == "Fahrenheit" {
-                return (fromTemp - 273.15) * 9.0 / 5.0 + 32.0
+                return celToFah(kelToCel(fromTemp))
             } else {
                 return fromTemp
             }
         }
+    }
+    
+    private func fahToCel(_ fah: Double) -> Double {
+        return (fah - 32.0) * 5.0 / 9.0
+    }
+    
+    private func celToFah(_ cel: Double) -> Double {
+        return cel * 9.0 / 5.0 + 32.0
+    }
+    
+    private func celToKel(_ cel: Double) -> Double {
+        return cel + 273.15
+    }
+    
+    private func kelToCel(_ kel: Double) -> Double {
+        return kel - 273.15
     }
     
     var body: some View {
